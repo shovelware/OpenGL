@@ -1,0 +1,33 @@
+//SQUARE MOVEMENT
+
+			//Arrow L : Move Left
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Left))
+				sqX--;
+
+			//Arrow R : Move Right
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Right))
+				sqX++;
+
+			//Arrow U : Move Up
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Up))
+				sqY--;
+
+			//Arrow D : Move Down
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Down))
+				sqY++;
+			
+			//A : Scale down X
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::A))
+				sqW--;
+
+			//D : Scale up X
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::D))
+				sqW++;
+
+			//W : Scale up Y
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::W))
+				sqH++;
+
+			//S : Scale down Y
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::S))
+				sqH--;
