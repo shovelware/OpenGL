@@ -225,7 +225,7 @@ void drawSpiral3(const int x, const int y, const int vertices, float radius, con
 	glEnd();
 }
 
-void drawSpiral4(const int x, const int y, const float radius, const float revolutions, const float fidelity = 360)
+void drawSpiral4(const int x, const int y, const float radius, const float revolutions, const float expansion, const float fidelity = 360)
 {
 
 	float posX, posY;
@@ -234,8 +234,8 @@ void drawSpiral4(const int x, const int y, const float radius, const float revol
 	glBegin(GL_LINE_STRIP);
 	for (int i = 0; i < revolutions * fidelity; ++i)
 	{
-		posX = x + radius * (cos(DR * 360 / fidelity * i * 1.0));
-		posY = y + radius * (sin(DR * 360 / fidelity * i * 1.0));
+		posX = x + ((radius + i * expansion) * (cos(DR * 360 / fidelity * i * 1.0)));
+		posY = y + ((radius + i * expansion) * (sin(DR * 360 / fidelity * i * 1.0)));
 
 		glVertex2f(xConv(posX), yConv(posY));
 	}
@@ -372,10 +372,7 @@ int main()
 		// Draw loop
 		window.clear();
 		//if (toggle)
-		//drawSpiral(midX, midY, 2, 4, 50, 1.5);
-		//drawSpiral2(midX, midY, 180, 2);
-		//drawSpiral3(midX, midY, 360, 1, 2);
-		drawSpiral4(midX, midY, 10, 2);
+		drawSpiral4(midX, midY, 1, 15, 0.05);
 		//drawSine(midX, midY, screenW, screenH, 10);
 		toggle = false;
 		window.display();
