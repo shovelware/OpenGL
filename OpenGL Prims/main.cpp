@@ -22,6 +22,13 @@
 #include "SFML/OpenGL.hpp" 
 #include <iostream>
 
+#include <time.h>
+#define _USE_MATH_DEFINES
+#include "math.h"
+
+const double RD = 180 / M_PI;
+const double DR = M_PI / 180;
+
 using std::cout;
 using std::endl;
 
@@ -55,6 +62,11 @@ float yConv(const int y)
 void setGLCol(const float r, const float g, const float b)
 {
 	glColor3f(r / 255, g / 255, b / 255);
+}
+
+void randColor()
+{
+	glColor3f(rand() % 255 / 255.0, rand() % 255 / 255.0, rand() % 255 / 255.0);
 }
 
 sf::Vector2f VecConv(const sf::Vector2i inVector)
@@ -103,6 +115,153 @@ void drawFillSquare(const int x, const int y, const int w, const int h)
 	glEnd();
 }
 
+void drawRandSquare(const int x, const int y, const int w, const int h)
+{
+	//Convert pixel coords to screenspace
+	sf::Vector2f tl(xConv(x), yConv(y));
+	sf::Vector2f bl(xConv(x), yConv(y + h));
+	sf::Vector2f br(xConv(x + w), yConv(y + h));
+	sf::Vector2f tr(xConv(x + w), yConv(y));
+
+	//Draw
+	glBegin(GL_QUADS);
+
+	randColor();
+	glVertex2f(tl.x, tl.y);
+	randColor();
+	glVertex2f(bl.x, bl.y);
+	randColor();
+	glVertex2f(br.x, br.y);
+	randColor();
+	glVertex2f(tr.x, tr.y);
+
+	glEnd();
+}
+
+
+void drawLinePoly(const int x, const int y, const int vertices, const int radius)
+{
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < vertices; ++i)
+	{
+		glVertex2f(xConv(x + radius * (cos(DR * 360 / vertices * i))), yConv(y + radius * (sin(DR * 360 / vertices * i))));
+	}
+	glEnd();
+}
+
+void drawFillPoly(const int x, const int y, const int vertices, const int radius)
+{
+	glBegin(GL_POLYGON);
+	for (int i = 0; i < vertices; ++i)
+	{
+		glVertex2f(xConv(x + radius * (cos(DR * 360 / vertices * i))), yConv(y + radius * (sin(DR * 360 / vertices * i))));
+	}
+	glEnd();
+}
+
+void drawSpiral(const int x, const int y, const int revolutions, const float smoothness, const float innerDist, const float expansion)
+{
+	int count = 0;
+	glBegin(GL_LINE_STRIP);
+	for (int r = 0; r <= revolutions; ++r)
+	{
+		for (int d = 0; d <= 360; ++d)
+		{
+			float posx = x + (((innerDist * r + d) * expansion) * cos(DR * 360 / smoothness * d));
+			float posy = y + (((innerDist * r + d) * expansion) * sin(DR * 360 / smoothness * d));
+			glVertex2f(xConv(posx), yConv(posy));
+			//cout << posx << " | " << posy << endl;
+			count++;
+		}
+	}
+	glEnd();
+	cout << count << endl;
+}
+
+void drawThing(const int x, const int y, const int revolutions, const float smoothness, const float innerDist, const float expansion)
+{
+	int count = 0;
+	glBegin(GL_LINE_STRIP);
+	for (int r = 0; r <= revolutions; ++r)
+	{
+		for (int d = 0; d <= 360; ++d)
+		{
+			float posx = x + (((innerDist * r + d) * expansion) * cos(DR * 360 / smoothness * d));
+			float posy = y + (((innerDist * r + d) * expansion) * sin(DR * 360 / smoothness * d));
+			glVertex2f(xConv(posx), yConv(posy));
+			count++;
+		}
+	}
+	glEnd();
+	cout << count << endl;
+}
+
+void drawSpiral2(const int x, const int y, const float vertices, const float revolutions)
+{
+	glBegin(GL_LINE_STRIP);
+	float interval = 360 / vertices;
+	float degrees = 360 * revolutions;
+	for (float d = 0; d <= degrees; d += interval)
+	{
+		//float posX = xConv(x + radius * (cos(DR * 360 / vertices * i)));
+		//float posY = yConv(y + radius * (sin(DR * 360 / vertices * i))));
+		//glVertex2f(xConv(posx), yConv(posy));
+		//cout << posx << " | " << posy << endl;
+	}
+
+	glEnd();
+}
+
+void drawSpiral3(const int x, const int y, const int vertices, float radius, const float revolutions)
+{
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < vertices * revolutions; ++i)
+	{
+		float posX = xConv(x + radius * (cos(DR * 360 / vertices * i)));
+		float posY = yConv(y + radius * (sin(DR * 360 / vertices * i)));
+		glVertex2f(xConv(posX), yConv(posY));
+		radius = radius * 0.99;
+	}
+	glEnd();
+}
+
+void drawSpiral4(const int x, const int y, const float radius, const float revolutions, const float fidelity = 360)
+{
+
+	float posX, posY;
+	const float vertices = revolutions * fidelity;
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < revolutions * fidelity; ++i)
+	{
+		posX = x + radius * (cos(DR * 360 / fidelity * i * 1.0));
+		posY = y + radius * (sin(DR * 360 / fidelity * i * 1.0));
+
+		glVertex2f(xConv(posX), yConv(posY));
+	}
+	glEnd();
+}
+
+void drawSine(const int x, const int y, const float width, const float height, const float frequency, const float fidelity = 360)
+{
+	float sineX = x - width / 2;
+	float sineY = y - height / 2;
+	float radius = height / 2;
+
+	float posX, posY;
+	const float vertices = frequency * fidelity;
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < vertices; ++i)
+	{
+		posX = sineX + (width / frequency / fidelity) * i * 1.0;
+		posY = y + radius * (sin(DR * 360 / fidelity * i * 1.0));
+		randColor();
+		glVertex2f(xConv(posX), yConv(posY));
+	}
+	glEnd();
+}
+
 ////EXERCISE
 void drawLineGrid(const int rows, const int cols, const int spacer, const int width, const int height)
 {
@@ -126,11 +285,54 @@ void drawFillGrid(const int rows, const int cols, const int spacer, const int wi
 	}
 }
 
+void drawChessGrid(const int rows, const int cols, const int spacer, const int width, const int height)
+{
+	for (int r = 0; r < rows; r++)
+	{
+		int count = r % 2;
+		for (int c = 0; c < cols; c++)
+		{
+			count % 2 ? glColor3f(0, 0, 0) : glColor3f(1, 1, 1);
+
+			drawFillSquare(spacer + (spacer + width) * c, spacer + (spacer + height) * r, width, height);
+			count++;
+		}
+	}
+}
+
+void drawRandomGrid(const int rows, const int cols, const int spacer, const int width, const int height)
+{
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < cols; c++)
+		{
+			randColor();
+			drawFillSquare(spacer + (spacer + width) * c, spacer + (spacer + height) * r, width, height);
+		}
+	}
+}
+
+void drawSubRandomGrid(const int rows, const int cols, const int spacer, const int width, const int height)
+{
+	for (int r = 0; r < rows; r++)
+	{
+		for (int c = 0; c < cols; c++)
+		{
+			drawRandSquare(spacer + (spacer + width) * c, spacer + (spacer + height) * r, width, height);
+		}
+	}
+}
+
 ////////////////////////////////////////////////////////////
 ///Entrypoint of application 
 //////////////////////////////////////////////////////////// 
 int main()
 {
+	srand(time(NULL));
+	int midX = screenW / 2;
+	int midY = screenH / 2;
+	bool toggle = true;
+
 	// Create the main window 
 	sf::RenderWindow window(sf::VideoMode(screenW, screenH, 32), "SFML OpenGL Program");
 
@@ -169,10 +371,13 @@ int main()
 
 		// Draw loop
 		window.clear();
-
-		//TODO: Draw Items
-		drawLineGrid(rows, cols, spacer, squareW, squareH);
-
+		//if (toggle)
+		//drawSpiral(midX, midY, 2, 4, 50, 1.5);
+		//drawSpiral2(midX, midY, 180, 2);
+		//drawSpiral3(midX, midY, 360, 1, 2);
+		drawSpiral4(midX, midY, 10, 2);
+		//drawSine(midX, midY, screenW, screenH, 10);
+		toggle = false;
 		window.display();
 
 	}
