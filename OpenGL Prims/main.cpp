@@ -234,8 +234,8 @@ void drawSpiral4(const int x, const int y, const float radius, const float revol
 	glBegin(GL_LINE_STRIP);
 	for (int i = 0; i < revolutions * fidelity; ++i)
 	{
-		posX = x + ((radius + i * expansion) * (cos(DR * 360 / fidelity * i * 1.0)));
-		posY = y + ((radius + i * expansion) * (sin(DR * 360 / fidelity * i * 1.0)));
+		posX = x + ((radius + i * expansion) * (cos(DR * 360 / fidelity * i)));
+		posY = y + ((radius + i * expansion) * (sin(DR * 360 / fidelity * i)));
 
 		glVertex2f(xConv(posX), yConv(posY));
 	}
