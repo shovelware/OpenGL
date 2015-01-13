@@ -2,25 +2,8 @@
 // Headers 
 //////////////////////////////////////////////////////////// 
 #include "stdafx.h" 
-#ifdef _DEBUG 
-#pragma comment(lib,"sfml-graphics-d.lib") 
-#pragma comment(lib,"sfml-audio-d.lib") 
-#pragma comment(lib,"sfml-system-d.lib") 
-#pragma comment(lib,"sfml-window-d.lib") 
-#pragma comment(lib,"sfml-network-d.lib") 
-#else 
-#pragma comment(lib,"sfml-graphics.lib") 
-#pragma comment(lib,"sfml-audio.lib") 
-#pragma comment(lib,"sfml-system.lib") 
-#pragma comment(lib,"sfml-window.lib") 
-#pragma comment(lib,"sfml-network.lib") 
-#endif 
-#pragma comment(lib,"opengl32.lib") 
-#pragma comment(lib,"glu32.lib") 
-
-#include "SFML/Graphics.hpp" 
-#include "SFML/OpenGL.hpp" 
 #include <iostream>
+#include "Claw.h"
 
 #include <time.h>
 #define _USE_MATH_DEFINES
@@ -36,14 +19,12 @@ using std::endl;
 ///Global Variables
 //////////////////////////////////////////////////////////// 
 
-const int screenW = 400;
-const int screenH = 400;
-
 int spacer = 2;
 int squareW = 32;
 int squareH = 32;
 int rows = 8;
 int cols = 8;
+Claw c;
 
 ////////////////////////////////////////////////////////////
 ///Functions
@@ -61,7 +42,16 @@ float yConv(const int y)
 
 void setGLCol(const float r, const float g, const float b)
 {
-	glColor3f(r / 255, g / 255, b / 255);
+	if (r <= 1 && g <= 1 && b <= 1)
+		glColor3f(r, g, b);
+	else glColor3f(r / 255, g / 255, b / 255);
+}
+
+void setGLColArr(const float col[3])
+{
+	if (col[0] <= 1 && col[1] <= 1 && col[2] <= 1)
+		glColor3f(col[0], col[1], col[2]);
+	else glColor3f(col[0] / 255, col[1] / 255, col[2] / 255);
 }
 
 void randColor()
@@ -262,7 +252,6 @@ void drawSine(const int x, const int y, const float width, const float height, c
 	glEnd();
 }
 
-////EXERCISE
 void drawLineGrid(const int rows, const int cols, const int spacer, const int width, const int height)
 {
 	for (int r = 0; r < rows; r++)
@@ -329,9 +318,8 @@ void drawSubRandomGrid(const int rows, const int cols, const int spacer, const i
 int main()
 {
 	srand(time(NULL));
-	int midX = screenW / 2;
-	int midY = screenH / 2;
 	bool toggle = true;
+	c = Claw(midX, midY + midY / 2, 50, 50);
 
 	// Create the main window 
 	sf::RenderWindow window(sf::VideoMode(screenW, screenH, 32), "SFML OpenGL Program");
@@ -350,31 +338,64 @@ int main()
 			// Escape key : exit 
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
-
-			//Arrow L : Width Down
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Left))
-				squareW--;
-
-			//Arrow R : Width Up
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Right))
-				squareW++;
-
-			//Arrow U : Height Up
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Up))
-				squareH++;
-
-			//Arrow D : Height Down
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Down))
-				squareH--;
 				
+			//A : Move Left
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::A))
+				c.moveBodyH(false);
+
+			//D : Move Right
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::D))
+				c.moveBodyH(true);
+
+			//W : Move Up
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::W))
+				c.moveBodyV(false);
+
+			//S : Move Down
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::S))
+				c.moveBodyV(true);
+
+			//Arrow L : Upper Left
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Left))
+				c.rotUpper(true);
+
+			//Arrow R : Upper Right
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Right))
+				c.rotUpper(false);
+
+			//Arrow U : Lower Left
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Up))
+				c.rotLower(true);
+
+			//Arrow D : Lower Right
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Down))
+				c.rotLower(false);
+
+			//E : Claw Right
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::E))
+				c.rotClaw(false);
+
+			//Q : Claw Left
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Q))
+				c.rotClaw(true);
+
+			//Space : Claw Close
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Space))
+				c.gripClaw(false);
+
+			//BackSpace : Close Claws
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::BackSpace))
+				c.gripClaw(true);
+
 		}
 
 		// Draw loop
 		window.clear();
 		//if (toggle)
-		drawSpiral4(midX, midY, 1, 15, 0.05);
+		//drawSpiral4(midX, midY, 1, 15, 0.05);
 		//drawSine(midX, midY, screenW, screenH, 10);
-		toggle = false;
+		//toggle = false;
+		c.Draw();
 		window.display();
 
 	}
