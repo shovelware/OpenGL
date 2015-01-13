@@ -66,11 +66,11 @@ public:
 		fClaw = 0,
 		fClawG = 0;
 	//Speed
-	float sBody = 1,
-		sUpper = 1,
-		sLower = 1,
-		sClaw = 1,
-		sClawG = 0.001;
+	float sBody = 0.01,
+		sUpper = 0.01,
+		sLower = 0.01,
+		sClaw = 0.01,
+		sClawG = 0.00001;
 	//Color
 	float base[4],
 		upper[4],

@@ -11,6 +11,11 @@
 
 const double RD = 180 / M_PI;
 const double DR = M_PI / 180;
+const sf::Mouse mouse;
+const sf::Keyboard keyboard;
+typedef sf::Keyboard::Key Key;
+typedef sf::Mouse::Button Button;
+
 
 using std::cout;
 using std::endl;
@@ -25,6 +30,7 @@ int squareH = 32;
 int rows = 8;
 int cols = 8;
 Claw c;
+
 
 ////////////////////////////////////////////////////////////
 ///Functions
@@ -312,6 +318,58 @@ void drawSubRandomGrid(const int rows, const int cols, const int spacer, const i
 	}
 }
 
+void CheckInput()
+{
+	//A : Move Left
+	if (keyboard.isKeyPressed(Key::A))
+		c.moveBodyH(false);
+
+	//D : Move Right
+	if (keyboard.isKeyPressed(Key::D))
+		c.moveBodyH(true);
+
+	//W : Move Up
+	if (keyboard.isKeyPressed(Key::W))
+		c.moveBodyV(false);
+
+	//S : Move Down
+	if (keyboard.isKeyPressed(Key::S))
+		c.moveBodyV(true);
+
+	//Arrow L : Upper Left
+	if (keyboard.isKeyPressed(Key::Left))
+		c.rotUpper(true);
+
+	//Arrow R : Upper Right
+	if (keyboard.isKeyPressed(Key::Right))
+		c.rotUpper(false);
+
+	//Arrow U : Lower Left
+	if (keyboard.isKeyPressed(Key::Up))
+		c.rotLower(true);
+
+	//Arrow D : Lower Right
+	if (keyboard.isKeyPressed(Key::Down))
+		c.rotLower(false);
+
+	//E : Claw Right
+	if (keyboard.isKeyPressed(Key::E))
+		c.rotClaw(false);
+
+	//Q : Claw Left
+	if (keyboard.isKeyPressed(Key::Q))
+		c.rotClaw(true);
+
+	//Space : Claw Close
+	if (keyboard.isKeyPressed(Key::Space))
+		c.gripClaw(false);
+
+	//BackSpace : Close Claws
+	if (keyboard.isKeyPressed(Key::BackSpace))
+		c.gripClaw(true);
+
+}
+
 ////////////////////////////////////////////////////////////
 ///Entrypoint of application 
 //////////////////////////////////////////////////////////// 
@@ -338,56 +396,10 @@ int main()
 			// Escape key : exit 
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
-				
-			//A : Move Left
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::A))
-				c.moveBodyH(false);
-
-			//D : Move Right
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::D))
-				c.moveBodyH(true);
-
-			//W : Move Up
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::W))
-				c.moveBodyV(false);
-
-			//S : Move Down
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::S))
-				c.moveBodyV(true);
-
-			//Arrow L : Upper Left
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Left))
-				c.rotUpper(true);
-
-			//Arrow R : Upper Right
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Right))
-				c.rotUpper(false);
-
-			//Arrow U : Lower Left
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Up))
-				c.rotLower(true);
-
-			//Arrow D : Lower Right
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Down))
-				c.rotLower(false);
-
-			//E : Claw Right
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::E))
-				c.rotClaw(false);
-
-			//Q : Claw Left
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Q))
-				c.rotClaw(true);
-
-			//Space : Claw Close
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Space))
-				c.gripClaw(false);
-
-			//BackSpace : Close Claws
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::BackSpace))
-				c.gripClaw(true);
-
 		}
+
+		//Input
+		CheckInput();
 
 		// Draw loop
 		window.clear();
